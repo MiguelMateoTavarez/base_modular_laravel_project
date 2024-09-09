@@ -1,0 +1,10 @@
+<?php
+
+namespace Modules\{{ module }}\Eloquents\Services;
+
+use Modules\{{ module }}\Eloquents\Contracts\{{ class }}Contract;
+
+class {{ class }}Service implements {{ class }}Contract
+{
+    //
+}

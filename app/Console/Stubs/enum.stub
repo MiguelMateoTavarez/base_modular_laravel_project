@@ -1,0 +1,8 @@
+<?php
+
+namespace Modules\{{ module }}\Enums;
+
+enum {{ class }}: string
+{
+    //
+}

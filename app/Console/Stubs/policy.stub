@@ -1,0 +1,29 @@
+<?php
+
+namespace Modules\{{ module }}\Policies;
+
+use App\Models\User;
+use Modules\{{ module }}\Models\{{ class }};
+
+class {{ class }}Policy
+{
+    public function view(User $user, {{ class }} ${{ variable }})
+    {
+        //
+    }
+
+    public function create(User $user)
+    {
+        //
+    }
+
+    public function update(User $user, {{ class }} ${{ variable }})
+    {
+        //
+    }
+
+    public function delete(User $user, {{ class }} ${{ variable }})
+    {
+        //
+    }
+}

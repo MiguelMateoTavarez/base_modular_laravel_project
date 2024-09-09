@@ -1,0 +1,18 @@
+<?php
+
+namespace Modules\{{ module }}\Providers;
+
+use Illuminate\Support\ServiceProvider;
+
+class {{ class }}ServiceProvider extends ServiceProvider
+{
+    public function register()
+    {
+        //
+    }
+
+    public function boot()
+    {
+        //
+    }
+}
