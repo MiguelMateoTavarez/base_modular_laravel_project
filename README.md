@@ -10,14 +10,20 @@
       * seeders
     * Eloquents
       * Services
-      * Contract
+      * Contracts
     * Enums
     * Http
       * Controllers
-      * Middleware
+      * Middlewares
       * Requests
       * Resources
     * Models
     * Policies
     * Providers
     * Routes
+
+## Commands
+
+| Command | Description|
+| - | - |
+| php artisan make:module module_name | This command create a module with its structure |
