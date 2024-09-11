@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Http\Controllers;
+namespace Modules\Security\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class {{ controllerName }}Controller extends Controller
+class RolesControllerController extends Controller
 {
     public function index()
     {

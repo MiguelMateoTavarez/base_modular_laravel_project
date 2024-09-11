@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\{{ module }}\Enums;
+namespace Modules\{{ moduleName }}\Enums;
 
-enum {{ class }}: string
+enum {{ enumName }}: string
 {
     //
 }

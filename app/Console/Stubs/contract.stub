@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\{{ module }}\Eloquents\Contracts;
+namespace Modules\{{ moduleName }}\Eloquents\Contracts;
 
-interface {{ class }}Contract
+interface {{ interfaceName }}
 {
     //
 }

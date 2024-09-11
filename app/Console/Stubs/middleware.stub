@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\{{ module }}\Http\Middleware;
+namespace Modules\{{ moduleName }}\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
 
-class {{ class }}
+class {{ middlewareName }}
 {
     public function handle(Request $request, Closure $next)
     {

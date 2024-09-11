@@ -1,13 +1,13 @@
 <?php
 
-namespace Modules\{{ module }}\Policies;
+namespace Modules\{{ moduleName }}\Policies;
 
 use App\Models\User;
-use Modules\{{ module }}\Models\{{ class }};
+use Modules\{{ moduleName }}\Models\{{ modelName }};
 
-class {{ class }}Policy
+class {{ policyName }}
 {
-    public function view(User $user, {{ class }} ${{ variable }})
+    public function view(User $user, {{ modelName }} ${{ moduleInjected }})
     {
         //
     }
@@ -17,12 +17,12 @@ class {{ class }}Policy
         //
     }
 
-    public function update(User $user, {{ class }} ${{ variable }})
+    public function update(User $user, {{ modelName }} ${{ moduleInjected }})
     {
         //
     }
 
-    public function delete(User $user, {{ class }} ${{ variable }})
+    public function delete(User $user, {{ modelName }} ${{ moduleInjected }})
     {
         //
     }

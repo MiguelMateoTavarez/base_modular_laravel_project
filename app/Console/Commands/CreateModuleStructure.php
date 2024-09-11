@@ -3,14 +3,15 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Illuminate\Support\Str;
 
 class CreateModuleStructure extends Command
 {
-    protected $signature = 'make:module {name}';
+    protected $signature = 'make:module {module}';
     protected $description = 'Create a new module with the necessary directory structure';
-    protected $files;
+    protected Filesystem $files;
 
     public function __construct(Filesystem $files)
     {
@@ -18,17 +19,19 @@ class CreateModuleStructure extends Command
         $this->files = $files;
     }
 
-    public function handle()
+    /**
+     * @throws FileNotFoundException
+     */
+    public function handle(): void
     {
-        $moduleName = $this->argument('name');
-        $basePath = base_path("Modules/{$moduleName}");
+        $moduleName = Str::title($this->argument('module'));
+        $basePath = base_path("modules/$moduleName");
 
         $directories = [
-            'Database/factories',
-            'Database/migrations',
-            'Database/seeders',
+            'Database/Migrations',
+            'Database/Seeders',
             'Eloquents/Services',
-            'Eloquents/Contract',
+            'Eloquents/Contracts',
             'Enums',
             'Http/Controllers',
             'Http/Middleware',
@@ -44,28 +47,81 @@ class CreateModuleStructure extends Command
 
         $progressBar->start();
 
-        foreach($directories as $dir) {
+        foreach ($directories as $dir) {
             usleep(25000);
-            $this->createDirectory("{$basePath}/{$dir}");
+            $this->createDirectory("$basePath/$dir", $moduleName);
             $progressBar->advance();
         }
+
+        $this->addModuleProviderToProviders($moduleName);
 
         $progressBar->finish();
 
         $this->output->writeln('');
 
-        $this->info("Module {$moduleName} structure created successfully");
+        $this->info("Module $moduleName structure created successfully");
     }
 
-    protected function createDirectory($path)
+    /**
+     * @throws FileNotFoundException
+     */
+    protected function createDirectory(string $path, string $moduleName): void
     {
-        if(!$this->files->isDirectory($path)){
+        if (!$this->files->isDirectory($path)) {
             $this->files->makeDirectory($path, 0755, true, true);
-            $gitkeepPath = "{$path}/.gitkeep";
-            $this->files->put($gitkeepPath, "");
-        }else {
-            $this->info("Directory already exists: {$path}");
+            if (Str::contains($path, 'Providers')) {
+                $this->createProviderClass($moduleName, $path);
+            }
+            if (Str::contains($path, 'Routes')) {
+                $this->createApiFile($moduleName, $path);
+            }
+            $gitKeepPath = "$path/.gitkeep";
+            $this->files->put($gitKeepPath, "");
+        } else {
+            $this->info("Directory already exists: $path");
             exit();
         }
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    private function createProviderClass(string $moduleName, string $providerPath): void
+    {
+        $modelStub = app_path("/Console/Stubs/provider.stub");
+        $stubContent = $this->files->get($modelStub);
+        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->files->put("$providerPath/{$moduleName}ServiceProvider.php", $stubContent);
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    private function createApiFile(string $moduleName, string $apiPath): void
+    {
+        $modelStub = app_path("/Console/Stubs/api.stub");
+        $stubContent = $this->files->get($modelStub);
+        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->files->put("$apiPath/api.php", $stubContent);
+    }
+
+    /**
+     * @throws FileNotFoundException
+     */
+    private function addModuleProviderToProviders($moduleName): void
+    {
+        $providersPath = base_path('bootstrap/providers.php');
+        $providerClass = "Modules\\$moduleName\\Providers\\{$moduleName}ServiceProvider::class,";
+
+        $content = $this->files->get($providersPath);
+
+        if(!Str::contains($content, $providerClass)){
+            $newProviderEntry = "    $providerClass".PHP_EOL.'];';
+            $newContent = Str::replace('];', $newProviderEntry, $content);
+            $this->files->put($providersPath, $newContent);
+            $this->info("Service Provider {$providerClass} added to providers.php");
+            return;
+        }
+        $this->info("Service Provider {$providerClass} it's already exists in providers.php");
     }
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Models;
+namespace Modules\Security\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class {{ modelName }} extends Model
+class Role extends Model
 {
     protected $fillable = [
         //

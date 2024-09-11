@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Providers;
+namespace Modules\Crm\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class {{ moduleName }}ServiceProvider extends ServiceProvider
+class CrmServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,7 +13,7 @@ class {{ moduleName }}ServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
-        $this->loadTranslationsFrom(__DIR__ . '/../Lang/es.json', '{{ moduleName }}');
+        $this->loadTranslationsFrom(__DIR__ . '/../Lang/es.json', 'Crm');
     }
 
     /**
