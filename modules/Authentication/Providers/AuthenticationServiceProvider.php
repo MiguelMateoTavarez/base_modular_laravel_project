@@ -3,6 +3,8 @@
 namespace Modules\Authentication\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Authentication\Eloquents\Contracts\AuthServiceInterface;
+use Modules\Authentication\Eloquents\Services\AuthSanctumService;
 
 class AuthenticationServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,9 @@ class AuthenticationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(
+            AuthServiceInterface::class,
+            AuthSanctumService::class
+        );
     }
 }
