@@ -1,0 +1,8 @@
+<?php
+
+namespace Modules\{{ moduleName }}\Eloquents\Services;
+
+class {{ serviceName }}
+{
+    //
+}

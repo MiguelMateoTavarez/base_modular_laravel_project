@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Database\Seeders;
+namespace Modules\Security\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 
-class {{ seederName }} extends Seeder
+class RoleSeeder extends Seeder
 {
     public function run()
     {

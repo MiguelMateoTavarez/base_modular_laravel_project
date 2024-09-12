@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Http\Requests;
+namespace Modules\Security\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ requestName }} extends FormRequest
+class RoleRequest extends FormRequest
 {
     public function authorize()
     {

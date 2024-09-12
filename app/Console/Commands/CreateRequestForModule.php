@@ -7,10 +7,10 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class CreateControllerForModule extends Command
+class CreateRequestForModule extends Command
 {
-    protected $signature = 'make:module-controller {module} {controller}';
-    protected $description = 'Create a controller for a module';
+    protected $signature = 'make:module-request {module} {request}';
+    protected $description = 'Create a request for a module';
     protected Filesystem $files;
 
     public function __construct(Filesystem $files)
@@ -25,12 +25,12 @@ class CreateControllerForModule extends Command
     public function handle(): void
     {
         $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Http/Controllers");
-        $controllerName = $this->argument('controller');
+        $basePath = base_path("modules/{$moduleName}/Http/Requests");
+        $requestName = $this->getTitleFormatted();
 
-        $controllerPath = "{$basePath}/{$controllerName}.php";
+        $requestPath = "{$basePath}/{$requestName}.php";
 
-        if($this->files->exists($controllerPath)){
+        if($this->files->exists($requestPath)){
             $this->warn('The file already exists');
             return;
         }
@@ -39,14 +39,20 @@ class CreateControllerForModule extends Command
             $this->files->makeDirectory($basePath,0755, true);
         }
 
-        $modelStub = app_path("/Console/Stubs/api_controller.stub");
+        $modelStub = app_path("/Console/Stubs/request.stub");
         $stubContent = $this->files->get($modelStub);
 
-        $stubContent = str_replace('{{ controllerName }}', $controllerName, $stubContent);
+        $stubContent = str_replace('{{ requestName }}', $requestName, $stubContent);
         $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
 
-        $this->files->put($controllerPath, $stubContent);
+        $this->files->put($requestPath, $stubContent);
 
-        $this->info("{$controllerName} created successfully for the module {$moduleName}");
+        $this->info("{$requestName} created successfully for the module {$moduleName}");
+    }
+
+    private function getTitleFormatted()
+    {
+        $title = $this->argument('request');
+        return Str::contains($title, 'Request') ? $title : $title.'Request';
     }
 }

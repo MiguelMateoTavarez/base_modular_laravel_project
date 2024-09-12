@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Http\Resources;
+namespace Modules\Security\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class {{ resourceName }} extends JsonResource
+class RoleResource extends JsonResource
 {
     public function toArray($request)
     {

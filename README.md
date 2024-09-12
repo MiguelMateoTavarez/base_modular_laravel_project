@@ -24,13 +24,13 @@
 
 ## Commands
 
-| Command                            | Description                                                |
-|------------------------------------|------------------------------------------------------------|
-| php artisan make:module ModuleName | Create a new module with the necessary directory structure |
-| php artisan make:module-controller | Create a controller for a module                           |
-| php artisan make:module-enum       | Create an enum for a module                                |
-| php artisan make:module-interface  | Create an interface for a module                           |
-| php artisan make:module-middleware | Create an middleware for a module                          |
-| php artisan make:module-migration  | Create a migration for a module                            |
-| php artisan make:module-model      | Create a model for a module                                |
-| php artisan make:module-policy     | Create a policy for a module                               |
+| Command                                                          | Description                                                |
+|------------------------------------------------------------------|------------------------------------------------------------|
+| php artisan make:module ModuleName                               | Create a new module with the necessary directory structure |
+| php artisan make:module-controller ModuleName ResourceController | Create a controller for a module                           |
+| php artisan make:module-enum ModuleName ResourceEnum             | Create an enum for a module                                |
+| php artisan make:module-interface ModuleName ResourceInterface   | Create an interface for a module                           |
+| php artisan make:module-middleware ModuleName ResourceMiddleware | Create an middleware for a module                          |
+| php artisan make:module-migration ModuleName ResourceMigration   | Create a migration for a module                            |
+| php artisan make:module-model ModuleName ResourceModel           | Create a model for a module                                |
+| php artisan make:module-policy ModuleName ResourcePolicy         | Create a policy for a module                               |

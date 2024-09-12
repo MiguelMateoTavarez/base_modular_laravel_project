@@ -1,0 +1,10 @@
+<?php
+
+namespace Modules\{{ moduleName }}\Eloquents\Services;
+
+use Modules\{{ moduleName }}\Eloquents\Contracts\{{ interfaceName }};
+
+class {{ serviceName }} implements {{ interfaceName }}
+{
+    //
+}

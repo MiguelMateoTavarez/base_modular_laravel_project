@@ -27,6 +27,11 @@ class CreateModuleStructure extends Command
         $moduleName = Str::title($this->argument('module'));
         $basePath = base_path("modules/$moduleName");
 
+        if ($this->files->isDirectory($basePath)) {
+            $this->warn("The module $moduleName already exists");
+            return;
+        }
+
         $directories = [
             'Database/Migrations',
             'Database/Seeders',
@@ -67,20 +72,15 @@ class CreateModuleStructure extends Command
      */
     protected function createDirectory(string $path, string $moduleName): void
     {
-        if (!$this->files->isDirectory($path)) {
-            $this->files->makeDirectory($path, 0755, true, true);
-            if (Str::contains($path, 'Providers')) {
-                $this->createProviderClass($moduleName, $path);
-            }
-            if (Str::contains($path, 'Routes')) {
-                $this->createApiFile($moduleName, $path);
-            }
-            $gitKeepPath = "$path/.gitkeep";
-            $this->files->put($gitKeepPath, "");
-        } else {
-            $this->info("Directory already exists: $path");
-            exit();
+        $this->files->makeDirectory($path, 0755, true, true);
+        if (Str::contains($path, 'Providers')) {
+            $this->createProviderClass($moduleName, $path);
         }
+        if (Str::contains($path, 'Routes')) {
+            $this->createApiFile($moduleName, $path);
+        }
+        $gitKeepPath = "$path/.gitkeep";
+        $this->files->put($gitKeepPath, "");
     }
 
     /**
@@ -115,8 +115,8 @@ class CreateModuleStructure extends Command
 
         $content = $this->files->get($providersPath);
 
-        if(!Str::contains($content, $providerClass)){
-            $newProviderEntry = "    $providerClass".PHP_EOL.'];';
+        if (!Str::contains($content, $providerClass)) {
+            $newProviderEntry = "    $providerClass" . PHP_EOL . '];';
             $newContent = Str::replace('];', $newProviderEntry, $content);
             $this->files->put($providersPath, $newContent);
             $this->info("Service Provider {$providerClass} added to providers.php");
