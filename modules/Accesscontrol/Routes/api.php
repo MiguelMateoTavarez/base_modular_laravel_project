@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Accesscontrol\Http\Controllers\PermissionController;
+use Modules\Accesscontrol\Http\Controllers\RoleController;
 
-Route::prefix('v1/Accesscontrol')->group(function () {
-    //
+Route::prefix('api/v1/access-control')->group(function () {
+    Route::get('permissions', PermissionController::class);
+    Route::resource('role', RoleController::class);
 });
