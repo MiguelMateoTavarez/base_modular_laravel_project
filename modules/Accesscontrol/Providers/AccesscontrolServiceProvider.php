@@ -3,6 +3,8 @@
 namespace Modules\Accesscontrol\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\Accesscontrol\Eloquents\Contracts\RoleInterface;
+use Modules\Accesscontrol\Eloquents\Services\RoleService;
 
 class AccesscontrolServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,9 @@ class AccesscontrolServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(
+            RoleInterface::class,
+            RoleService::class
+        );
     }
 }
