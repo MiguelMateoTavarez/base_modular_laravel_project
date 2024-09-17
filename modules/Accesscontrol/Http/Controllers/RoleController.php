@@ -3,7 +3,6 @@
 namespace Modules\Accesscontrol\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\API\V1\Roles\RolesResource;
 use App\Services\API\Responses\ApiResponseService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,7 +16,9 @@ class RoleController extends Controller
 {
     public function __construct(
         private readonly RoleInterface $roleInterfaceService
-    ){}
+    ){
+        parent::__construct();
+    }
 
     public function index()
     {
@@ -43,10 +44,10 @@ class RoleController extends Controller
         );
     }
 
-    public function update(UpdateRoleRequest $request, $id)
+    public function update(UpdateRoleRequest $request, string $id)
     {
         return ApiResponseService::success(
-            new RoleResource($this->roleInterfaceService->store($request->validated())),
+            new RoleResource($this->roleInterfaceService->update($request->validated(), $id)),
             'Role updated successfully',
         );
     }

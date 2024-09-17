@@ -9,7 +9,7 @@ class RoleService implements RoleInterface
 {
     public function index()
     {
-        return Role::paginated();
+        return Role::paginate();
     }
 
     public function store(array $request)
