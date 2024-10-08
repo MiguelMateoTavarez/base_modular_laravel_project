@@ -114,6 +114,7 @@ class CreateModuleStructure extends Command
         $providerClass = "Modules\\$moduleName\\Providers\\{$moduleName}ServiceProvider::class,";
 
         $content = $this->files->get($providersPath);
+        echo PHP_EOL;
 
         if (!Str::contains($content, $providerClass)) {
             $newProviderEntry = "    $providerClass" . PHP_EOL . '];';

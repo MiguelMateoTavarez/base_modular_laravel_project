@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class CreateSeederForModule extends Command
 {
-    protected $signature = 'make:module-seeder {module} {seeder}';
+    protected $signature = 'make:module-seeder {module} {seeder} {--p|path= : Custom path}';
     protected $description = 'Create a seeder for a module';
     protected Filesystem $files;
 

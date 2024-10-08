@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CustomPathTrait;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
@@ -9,7 +10,9 @@ use Illuminate\Support\Str;
 
 class CreateServiceForModule extends Command
 {
-    protected $signature = 'make:module-service {module} {service} {--i|interface= : The interface to implement}';
+    use CustomPathTrait;
+
+    protected $signature = 'make:module-service {module} {service} {--i|interface= : The interface to implement} {--p|path= : Custom path}';
     protected $description = 'Create a service for a module';
     protected Filesystem $files;
 
@@ -25,7 +28,10 @@ class CreateServiceForModule extends Command
     public function handle(): void
     {
         $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Eloquents/Services");
+        $customPath = $this->getCustomPath();
+        $basePath = is_null($customPath)
+            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Eloquents/Services')
+            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Eloquents/Services/' . $customPath);
         $seederName = $this->getTitleFormatted();
         $interfaceName = $this->option('interface');
 
@@ -53,6 +59,8 @@ class CreateServiceForModule extends Command
 
         $stubContent = str_replace('{{ serviceName }}', $seederName, $stubContent);
         $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $stubContent = str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
+
         if($interfaceName){
             $stubContent = str_replace('{{ interfaceName }}', $interfaceName, $stubContent);
         }

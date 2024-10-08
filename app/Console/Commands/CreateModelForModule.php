@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CustomPathTrait;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
@@ -9,7 +10,9 @@ use Illuminate\Support\Str;
 
 class CreateModelForModule extends Command
 {
-    protected $signature = 'make:module-model {module} {model}';
+    use CustomPathTrait;
+
+    protected $signature = 'make:module-model {module} {model} {--p|path= : Custom path}';
     protected $description = 'Create a model for a module';
     protected Filesystem $files;
 
@@ -25,7 +28,10 @@ class CreateModelForModule extends Command
     public function handle(): void
     {
         $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Models");
+        $customPath = $this->getCustomPath();
+        $basePath = is_null($customPath)
+            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Models')
+            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Models/' . $customPath);
         $modelName = $this->argument('model');
 
         $modelPath = "{$basePath}/{$modelName}.php";
@@ -39,6 +45,7 @@ class CreateModelForModule extends Command
 
         $stubContent = str_replace('{{ modelName }}', $modelName, $stubContent);
         $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $stubContent = str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
 
         $this->files->put($modelPath, $stubContent);
 
