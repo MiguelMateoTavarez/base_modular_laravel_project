@@ -36,21 +36,20 @@ class CreateControllerForModule extends Command
         $controllerPath = $this->getControllerPath($basePath, $controllerName);
 
         $this->verifyIfControllerExists($controllerPath);
-        $this->createDirectoryIfNotExists($basePath);
 
-        $this->updateControllerText($controllerPath, $controllerName, $moduleName);
+        $this->createDirectoryForController($basePath);
+        $this->createController($controllerPath, $controllerName, $moduleName);
 
         $this->info("{$controllerName} created successfully for the module {$moduleName}");
     }
 
-    private function getBasePath($customPath, $moduleName)
+    private function getBasePath(string $customPath, string $moduleName): string
     {
-        return is_null($customPath)
-            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . $this->directoryPath)
-            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . $customPath);
+        $path = $customPath ?? $this->directoryPath;
+        return base_path("modules/{$moduleName}/{$path}");
     }
 
-    private function getArgumentCapitalized($argument): string
+    private function getArgumentCapitalized(string $argument): string
     {
         return ucfirst($argument);
     }
@@ -64,11 +63,11 @@ class CreateControllerForModule extends Command
     {
         if ($this->files->exists($controllerPath)) {
             $this->warn('The file already exists');
-            exit;
+            throw new \RuntimeException('Controller already exists');
         }
     }
 
-    private function createDirectoryIfNotExists(string $basePath): void
+    private function createDirectoryForController(string $basePath): void
     {
         if (!$this->files->isDirectory($basePath)) {
             $this->files->makeDirectory($basePath, 0755, true);
@@ -80,17 +79,27 @@ class CreateControllerForModule extends Command
         return app_path($this->stubPath);
     }
 
-    private function getStubContent($controllerName, $moduleName): string
+    private function getStubContent(string $controllerName, string $moduleName): string
     {
         $stubContent = $this->files->get($this->getStubPath());
+        $placeHolders = [
+            '{{ controllerName }}' => $controllerName,
+            '{{ moduleName }}' => $moduleName,
+            '{{ namespace }}' => $this->getNameSpace(),
+        ];
 
-        $stubContent = str_replace('{{ controllerName }}', $controllerName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-        return str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
-
+        return $this->replaceStubPlaceHolders($stubContent, $placeHolders);
     }
 
-    private function updateControllerText($controllerPath, $controllerName, $moduleName): void
+    private function replaceStubPlaceHolders(string $content, array $placeHolders): string
+    {
+        foreach ($placeHolders as $placeHolder => $value) {
+            $content = str_replace($placeHolder, $value, $content);
+        }
+        return $content;
+    }
+
+    private function createController(string $controllerPath, string $controllerName, string $moduleName): void
     {
         $this->files->put($controllerPath, $this->getStubContent($controllerName, $moduleName));
     }
