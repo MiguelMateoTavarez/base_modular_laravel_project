@@ -1,11 +1,11 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class {{ controllerName }} extends Controller
+class FirstController extends Controller
 {
     public function index()
     {

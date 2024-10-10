@@ -4,29 +4,46 @@ namespace App\Console\shared;
 
 trait CustomPathTrait
 {
-    public function getCustomPath()
+    private function capitalizeDirectoryName($str)
     {
-        if(is_null($this->option('path'))){
-            return null;
-        }
+        return ucfirst($str);
+    }
 
+    private function getClearCustomCapitalizedPath()
+    {
+        $pathExploded = explode('/', implode($this->clearBackSlash()));
+
+        $pathCapitalized = array_map(function($str){
+            return ucfirst($str);
+        }, $pathExploded);
+
+        return implode('/',$pathCapitalized);
+    }
+
+    private function clearBackSlash()
+    {
         $pathSplited = str_split($this->option('path'));
 
-        if($pathSplited[0] == '/'){
+        if ($pathSplited[0] == '/') {
             array_shift($pathSplited);
         }
 
-        return implode($pathSplited);
+        return $pathSplited;
+    }
+
+    private function getCustomPath()
+    {
+        if (is_null($this->option('path'))) {
+            return $this->directoryPath;
+        }
+
+        return $this->directoryPath.'/'.$this->getClearCustomCapitalizedPath();
     }
 
     public function getNameSpace()
     {
-        if(is_null($this->option('path'))){
-            return "Modules\\{$this->argument('module')}\\Http\\Controllers";
-        }
-
         $pathFormattedForNamespace = str_replace('/', '\\', $this->getCustomPath());
 
-        return "Modules\\{$this->argument('module')}\\Http\\Controllers\\$pathFormattedForNamespace;";
+        return "Modules\\{$this->argument('module')}\\$pathFormattedForNamespace";
     }
 }

@@ -101,7 +101,7 @@ class CreateModuleStructure extends Command
     {
         $modelStub = app_path("/Console/Stubs/api.stub");
         $stubContent = $this->files->get($modelStub);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $stubContent = str_replace('{{ moduleName }}', strtolower($moduleName), $stubContent);
         $this->files->put("$apiPath/api.php", $stubContent);
     }
 

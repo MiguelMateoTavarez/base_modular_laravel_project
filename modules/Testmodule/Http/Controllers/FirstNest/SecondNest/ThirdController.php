@@ -1,11 +1,11 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Http\Controllers\FirstNest\SecondNest;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class {{ controllerName }} extends Controller
+class ThirdController extends Controller
 {
     public function index()
     {
