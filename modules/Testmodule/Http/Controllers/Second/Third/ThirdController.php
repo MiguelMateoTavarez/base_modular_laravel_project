@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Testmodule\Http\Controllers\FirstNest\SecondNest;
+namespace Modules\Testmodule\Http\Controllers\Second\Third;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

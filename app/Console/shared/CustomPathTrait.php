@@ -4,12 +4,12 @@ namespace App\Console\shared;
 
 trait CustomPathTrait
 {
-    private function capitalizeDirectoryName($str)
+    protected function capitalizeDirectoryName($str): string
     {
         return ucfirst($str);
     }
 
-    private function getClearCustomCapitalizedPath()
+    protected function getClearCustomCapitalizedPath(): string
     {
         $pathExploded = explode('/', implode($this->clearBackSlash()));
 
@@ -20,7 +20,7 @@ trait CustomPathTrait
         return implode('/',$pathCapitalized);
     }
 
-    private function clearBackSlash()
+    protected function clearBackSlash(): array
     {
         $pathSplited = str_split($this->option('path'));
 
@@ -31,7 +31,7 @@ trait CustomPathTrait
         return $pathSplited;
     }
 
-    private function getCustomPath()
+    protected function getCustomPath(): string
     {
         if (is_null($this->option('path'))) {
             return $this->directoryPath;
@@ -40,7 +40,7 @@ trait CustomPathTrait
         return $this->directoryPath.'/'.$this->getClearCustomCapitalizedPath();
     }
 
-    public function getNameSpace()
+    protected function getNameSpace(): string
     {
         $pathFormattedForNamespace = str_replace('/', '\\', $this->getCustomPath());
 

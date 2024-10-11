@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Testmodule\Models;
+namespace Modules\Testmodule\Models\Second\Third;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class FirstModel extends Model
+class ThirdModel extends Model
 {
     use SoftDeletes;
 
