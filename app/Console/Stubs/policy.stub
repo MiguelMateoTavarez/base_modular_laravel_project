@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Policies;
+namespace {{ namespace }};
 
 use App\Models\User;
 use Modules\{{ moduleName }}\Models\{{ modelName }};
 
-class {{ policyName }}
+class {{ resourceName }}
 {
     public function view(User $user, {{ modelName }} ${{ moduleInjected }})
     {

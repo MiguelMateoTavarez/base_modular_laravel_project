@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class CreateModelForModule extends CommandFactory
 {
@@ -12,6 +13,9 @@ class CreateModelForModule extends CommandFactory
     protected string $directoryPath = 'Models';
     protected string $stubPath = '/Console/Stubs/model.stub';
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function handle(): void
     {
         $moduleName = $this->getArgumentCapitalized($this->argument('module'));

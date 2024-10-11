@@ -1,8 +1,8 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Eloquents\Services;
+namespace {{ namespace }};
 
-class {{ serviceName }}
+class {{ resourceName }}
 {
     //
 }

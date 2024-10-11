@@ -2,57 +2,35 @@
 
 namespace App\Console\Commands;
 
-use App\Console\shared\CustomPathTrait;
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateInterfaceForModule extends Command
+class CreateInterfaceForModule extends CommandFactory
 {
-    use CustomPathTrait;
-
     protected $signature = 'make:module-interface {module} {interface} {--p|path= : Custom path}';
     protected $description = 'Create an interface for a module';
-    protected Filesystem $files;
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected string $directoryPath = 'Eloquents/Contracts';
+    protected string $stubPath = '/Console/Stubs/contract.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $customPath = $this->getCustomPath();
-        $basePath = is_null($customPath)
-            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . '/Eloquents/Contracts')
-            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . '/Eloquents/Contracts/' . $customPath);
-        $interfaceName = $this->argument('interface');
-        $interfacePath = "{$basePath}/{$interfaceName}.php";
+        $moduleName = $this->getArgumentCapitalized($this->argument('module'));
+        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        $interfaceName = $this->getArgumentCapitalized($this->argument('interface'));
 
-        if ($this->files->exists($interfacePath)) {
-            $this->warn('The file already exists');
-            return;
-        }
+        $this->setPlaceHolders($interfaceName, $moduleName);
 
-        if (!$this->files->isDirectory($basePath)) {
-            $this->files->makeDirectory($basePath, 0755, true);
-        }
+        $interfacePath = $this->getResourcePath($basePath, $interfaceName);
 
-        $modelStub = app_path("/Console/Stubs/contract.stub");
-        $stubContent = $this->files->get($modelStub);
+        $this->verifyIfResourceExists($interfacePath, 'Interface already exists.');
 
-        $stubContent = str_replace('{{ interfaceName }}', $interfaceName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-        $stubContent = str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($interfacePath, $interfaceName, $moduleName);
 
-        $this->files->put($interfacePath, $stubContent);
-
-        $this->info("{$interfaceName} created successfully for the module {$moduleName}");
+        $this->info("Interface {$interfaceName} created successfully for the module {$moduleName}");
     }
 }

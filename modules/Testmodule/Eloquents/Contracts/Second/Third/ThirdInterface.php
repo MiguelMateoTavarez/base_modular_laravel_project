@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Eloquents\Contracts\Second\Third;
 
 use Illuminate\Http\Request;
 
-interface {{ resourceName }}
+interface ThirdInterface
 {
     public function index();
     public function store(Request $request);

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class CreateControllerForModule extends CommandFactory
 {
@@ -12,6 +13,9 @@ class CreateControllerForModule extends CommandFactory
     protected string $directoryPath = 'Http/Controllers';
     protected string $stubPath = '/Console/Stubs/api_controller.stub';
 
+    /**
+     * @throws FileNotFoundException
+     */
     public function handle(): void
     {
         $moduleName = $this->getArgumentCapitalized($this->argument('module'));
