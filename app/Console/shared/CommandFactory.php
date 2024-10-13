@@ -37,7 +37,7 @@ abstract class CommandFactory extends Command
         return base_path("modules/{$moduleName}/{$path}");
     }
 
-    protected function getArgumentCapitalized(string $argument): string
+    protected function capitalize(string $argument): string
     {
         return ucfirst($argument);
     }
@@ -47,9 +47,9 @@ abstract class CommandFactory extends Command
         return "{$basePath}/{$resourceName}.php";
     }
 
-    protected function verifyIfResourceExists(string $resourceName, string $message): void
+    protected function verifyIfResourceExists(string $resourcePath, string $message): void
     {
-        if ($this->files->exists($resourceName)) {
+        if ($this->files->exists($resourcePath)) {
             throw new \RuntimeException($message);
         }
     }
@@ -86,8 +86,8 @@ abstract class CommandFactory extends Command
     /**
      * @throws FileNotFoundException
      */
-    protected function createResource(string $modelPath, string $modelName, string $moduleName): void
+    protected function createResource(string $resourcePath): void
     {
-        $this->files->putFileContent($modelPath, $this->getStubContent());
+        $this->files->putFileContent($resourcePath, $this->getStubContent());
     }
 }

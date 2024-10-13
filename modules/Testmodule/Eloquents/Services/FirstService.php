@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Eloquents\Services;
 
-use Modules\{{ moduleName }}\Eloquents\Contracts\{{ interfaceName }};
+use Modules\Testmodule\Eloquents\Contracts\FirstInterface;
 
-class {{ resourceName }} implements {{ interfaceName }}
+class FirstService implements FirstInterface
 {
         //
         public function index()

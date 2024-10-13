@@ -18,9 +18,9 @@ class CreateInterfaceForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->getArgumentCapitalized($this->argument('module'));
+        $moduleName = $this->capitalize($this->argument('module'));
         $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
-        $interfaceName = $this->getArgumentCapitalized($this->argument('interface'));
+        $interfaceName = $this->capitalize($this->argument('interface'));
 
         $this->setPlaceHolders($interfaceName, $moduleName);
 

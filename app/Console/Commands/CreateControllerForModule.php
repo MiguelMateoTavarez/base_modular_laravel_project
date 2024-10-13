@@ -18,9 +18,9 @@ class CreateControllerForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->getArgumentCapitalized($this->argument('module'));
+        $moduleName = $this->capitalize($this->argument('module'));
         $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
-        $controllerName = $this->getArgumentCapitalized($this->argument('controller'));
+        $controllerName = $this->capitalize($this->argument('controller'));
 
         $this->setPlaceHolders($controllerName, $moduleName);
 
@@ -29,7 +29,7 @@ class CreateControllerForModule extends CommandFactory
         $this->verifyIfResourceExists($controllerPath, 'Controller already exists.');
 
         $this->createDirectoryForResource($basePath);
-        $this->createResource($controllerPath, $controllerName, $moduleName);
+        $this->createResource($controllerPath);
 
         $this->info("{$controllerName} created successfully for the module {$moduleName}");
     }
