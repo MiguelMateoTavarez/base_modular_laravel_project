@@ -3,7 +3,7 @@
 namespace {{ namespace }};
 
 use App\Models\User;
-use Modules\{{ moduleName }}\Models\{{ modelName }};
+use {{ modelNamespace }};
 
 class {{ resourceName }}
 {

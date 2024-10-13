@@ -2,7 +2,8 @@
 
 namespace Modules\Testmodule\Eloquents\Services\Second;
 
-use Modules\Testmodule\Eloquents\Contracts\SecondInterface;
+use Illuminate\Http\Request;
+use Modules\Testmodule\Eloquents\Contracts\Second\SecondInterface;
 
 class SecondService implements SecondInterface
 {

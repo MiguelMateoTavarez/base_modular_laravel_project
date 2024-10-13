@@ -2,6 +2,7 @@
 
 namespace Modules\Testmodule\Eloquents\Services;
 
+use Illuminate\Http\Request;
 use Modules\Testmodule\Eloquents\Contracts\FirstInterface;
 
 class FirstService implements FirstInterface

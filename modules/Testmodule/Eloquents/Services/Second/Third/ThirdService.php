@@ -2,7 +2,8 @@
 
 namespace Modules\Testmodule\Eloquents\Services\Second\Third;
 
-use Modules\Testmodule\Eloquents\Contracts\ThirdInterface;
+use Illuminate\Http\Request;
+use Modules\Testmodule\Eloquents\Contracts\Second\Third\ThirdInterface;
 
 class ThirdService implements ThirdInterface
 {

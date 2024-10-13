@@ -15,7 +15,7 @@ class CreateServiceForModule extends CommandFactory
 
     protected string $directoryPath = 'Eloquents/Services';
     private string $interfacePath = 'Eloquents/Contracts';
-    protected string $stubPath = '/Console/Stubs/service_contract.stub';
+    protected string $stubPath = '/Console/Stubs/service.stub';
 
     /**
      * @throws FileNotFoundException
@@ -63,18 +63,21 @@ class CreateServiceForModule extends CommandFactory
         return $this->interfacePath.'/'.$this->getClearCustomCapitalizedPath();
     }
 
-    protected function updatePlaceHolders($interfaceName): void
-    {
-        $this->placeHolders['{{ interfaceName }}'] = $interfaceName;
-    }
-
     protected function setPlaceHolders($resourceName, $moduleName): void
     {
         $this->placeHolders = [
             '{{ resourceName }}' => $resourceName,
             '{{ moduleName }}' => $moduleName,
             '{{ namespace }}' => $this->getNameSpace(),
-            '{{ interfaceName }}' => $this->option('interface')
+            '{{ interfaceNamespace }}' => $this->getResourceImportedNameSpace(),
+            '{{ interfaceName }}' => $this->capitalize($this->option('interface'))
         ];
+    }
+
+    protected function getResourceImportedNameSpace(): string
+    {
+        $pathFormattedForNamespace = str_replace('/', '\\', $this->getInterfacePath());
+
+        return "Modules\\{$this->argument('module')}\\$pathFormattedForNamespace\\{$this->capitalize($this->option('interface'))}";
     }
 }

@@ -2,71 +2,88 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CommandFactory;
 use App\Console\shared\CustomPathTrait;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class CreatePolicyForModule extends Command
+class CreatePolicyForModule extends CommandFactory
 {
-    use CustomPathTrait;
-
-    protected $signature = 'make:module-policy
-        {module}
-        {policy}
+    protected $signature = 'make:module-policy {module} {policy}
         {--m|model= : The model that the policy applies to}
         {--p|path= : Custom path}';
     protected $description = 'Create a policy for a module';
-    protected Filesystem $files;
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected string $directoryPath = 'Policies';
+    private string $modelsPath = 'Models';
+    protected string $stubPath = '/Console/Stubs/policy.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $customPath = $this->getCustomPath();
-        $basePath = is_null($customPath)
-            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Policies')
-            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Policies/' . $customPath);
-        $policyName = $this->argument('policy');
+        $moduleName = $this->capitalize($this->argument('module'));
+        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        $modelBasePath = $this->getBasePath($this->getModelPath(), $moduleName);
+        $policyName = $this->capitalize($this->argument('policy'));
+        $modelName = $this->capitalize($this->option('model'));
+        $modelPath = $this->getResourcePath($modelBasePath, $modelName);
 
-        $modelName = Str::title($this->option('model'));
+        $this->verifyIfModelExists(
+            $modelPath,
+            "The model '{$modelBasePath}' doesn't exists."
+        );
 
-        if (!$modelName) {
-            $this->error('The --model or -m option is required');
-            return;
+        $this->setPlaceHolders($policyName, $moduleName);
+
+        $policyPath = $this->getResourcePath($basePath, $policyName);
+
+        $this->verifyIfResourceExists($policyPath, "Policy '{$policyName}' already exists.");
+
+        $this->createDirectoryForResource($basePath);
+
+        $this->createResource($policyPath);
+
+        $this->info("Policy {$policyName} created successfully for the module {$moduleName}");
+    }
+
+    private function getModelPath(): string
+    {
+        if (is_null($this->option('path'))) {
+            return $this->modelsPath;
         }
 
-        if (!class_exists("Modules\\{$moduleName}\\Models\\{$modelName}")) {
-            $this->error("The model '{$modelName}' doesn't exists");
-            return;
+        return $this->modelsPath.'/'.$this->getClearCustomCapitalizedPath();
+    }
+
+    private function verifyIfModelExists(string $modelPath, string $message): void
+    {
+        if (!$this->files->exists($modelPath)) {
+            throw new \RuntimeException($message);
         }
+    }
 
-        $policyPath = "{$basePath}/{$policyName}.php";
+    protected function setPlaceHolders($resourceName, $moduleName): void
+    {
+        $model = $this->option('model');
 
-        if (!$this->files->isDirectory($basePath)) {
-            $this->files->makeDirectory($basePath, 0755, true);
-        }
+        $this->placeHolders = [
+            '{{ resourceName }}' => $resourceName,
+            '{{ moduleName }}' => $moduleName,
+            '{{ namespace }}' => $this->getNameSpace(),
+            '{{ modelNamespace }}' => $this->getResourceImportedNameSpace(),
+            '{{ modelName }}' => $model,
+            '{{ moduleInjected }}' => lcfirst($model)
+        ];
+    }
 
-        $modelStub = app_path("/Console/Stubs/policy.stub");
-        $stubContent = $this->files->get($modelStub);
+    protected function getResourceImportedNameSpace(): string
+    {
+        $pathFormattedForNamespace = str_replace('/', '\\', $this->getModelPath());
 
-        $stubContent = str_replace('{{ policyName }}', $policyName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-        $stubContent = str_replace('{{ modelName }}', $modelName, $stubContent);
-        $stubContent = str_replace('{{ moduleInjected }}', Str::lower($modelName), $stubContent);
-        $stubContent = str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
-
-        $this->files->put($policyPath, $stubContent);
-
-        $this->info("Model {$policyName} created successfully for the module {$moduleName}");
+        return "Modules\\{$this->argument('module')}\\$pathFormattedForNamespace\\{$this->capitalize($this->option('model'))}";
     }
 }
