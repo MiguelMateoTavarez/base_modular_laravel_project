@@ -20,7 +20,7 @@ class CreateResourceForModule extends CommandFactory
      */
     public function handle(): void
     {
-        parent:: handle();
+        parent::handle();
 
         $basePath = $this->getBasePath($this->getCustomPath());
         $resourceName = $this->capitalize($this->argument('resource'));

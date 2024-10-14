@@ -23,7 +23,7 @@ class CreateMigrationForModule extends CommandFactory
      */
     public function handle(): void
     {
-        parent:: handle();
+        parent::handle();
 
         $basePath = $this->getBasePath($this->getCustomPath());
         $migrationName = $this->argument('migration');

@@ -24,7 +24,7 @@ class CreatePolicyForModule extends CommandFactory
      */
     public function handle(): void
     {
-        parent:: handle();
+        parent::handle();
 
         $basePath = $this->getBasePath($this->getCustomPath());
         $modelBasePath = $this->getBasePath($this->getModelPath());

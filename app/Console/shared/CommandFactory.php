@@ -11,8 +11,11 @@ abstract class CommandFactory extends Command
     use CustomPathTrait;
 
     protected string $directoryPath;
+
     protected string $stubPath;
-    protected array  $placeHolders;
+
+    protected array $placeHolders;
+
     protected string $moduleName;
 
     protected FileSystemAdapter $files;

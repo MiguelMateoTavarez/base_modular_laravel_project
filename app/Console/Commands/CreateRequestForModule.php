@@ -20,7 +20,7 @@ class CreateRequestForModule extends CommandFactory
      */
     public function handle(): void
     {
-        parent:: handle();
+        parent::handle();
 
         $basePath = $this->getBasePath($this->getCustomPath());
         $requestName = $this->capitalize($this->argument('request'));

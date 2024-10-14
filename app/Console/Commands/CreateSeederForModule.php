@@ -20,7 +20,7 @@ class CreateSeederForModule extends CommandFactory
      */
     public function handle(): void
     {
-        parent:: handle();
+        parent::handle();
 
         $basePath = $this->getBasePath($this->getCustomPath());
         $seederName = $this->capitalize($this->argument('seeder'));
