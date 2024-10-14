@@ -13,7 +13,7 @@ return new class extends Migration
     /**
      * Run the Migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('{{ table }}', function (Blueprint $table) {
             $table->id();
@@ -22,7 +22,7 @@ return new class extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('{{ table }}');
     }
