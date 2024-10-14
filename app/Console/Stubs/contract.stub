@@ -1,8 +1,10 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Eloquents\Contracts;
+namespace {{ namespace }};
 
-interface {{ interfaceName }}
+use Illuminate\Http\Request;
+
+interface {{ resourceName }}
 {
     public function index();
     public function store(Request $request);

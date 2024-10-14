@@ -2,57 +2,38 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateResourceForModule extends Command
+class CreateResourceForModule extends CommandFactory
 {
-    protected $signature = 'make:module-resource {module} {resource}';
-    protected $description = 'Create a resource for a module';
-    protected Filesystem $files;
+    protected $signature = 'make:module-resource {module} {resource} {--p|path= : Custom path}';
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected $description = 'Create a resource for a module';
+
+    protected string $directoryPath = 'Http/Resources';
+
+    protected string $stubPath = '/Console/Stubs/resource.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Http/Resources");
-        $resourceName = $this->getTitleFormatted();
+        parent::handle();
 
-        $resourcePath = "{$basePath}/{$resourceName}.php";
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $resourceName = $this->capitalize($this->argument('resource'));
 
-        if($this->files->exists($resourcePath)){
-            $this->warn('The file already exists');
-            return;
-        }
+        $this->setPlaceHolders($resourceName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $resourcePath = $this->getResourcePath($basePath, $resourceName);
 
-        $modelStub = app_path("/Console/Stubs/resource.stub");
-        $stubContent = $this->files->get($modelStub);
+        $this->verifyIfResourceExists($resourcePath, 'Resource already exists.');
 
-        $stubContent = str_replace('{{ resourceName }}', $resourceName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($resourcePath);
 
-        $this->files->put($resourcePath, $stubContent);
-
-        $this->info("{$resourceName} created successfully for the module {$moduleName}");
-    }
-
-    private function getTitleFormatted()
-    {
-        $title = $this->argument('resource');
-        return Str::contains($title, 'Resource') ? $title : $title.'Resource';
+        $this->info("{$resourceName} created successfully for the module {$this->moduleName}");
     }
 }

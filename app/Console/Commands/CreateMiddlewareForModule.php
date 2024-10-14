@@ -2,46 +2,38 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateMiddlewareForModule extends Command
+class CreateMiddlewareForModule extends CommandFactory
 {
-    protected $signature = 'make:module-middleware {module} {middleware}';
-    protected $description = 'Create a middleware for a module';
-    protected Filesystem $files;
+    protected $signature = 'make:module-middleware {module} {middleware} {--p|path= : Custom path}';
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected $description = 'Create a middleware for a module';
+
+    protected string $directoryPath = 'Http/Middleware';
+
+    protected string $stubPath = '/Console/Stubs/middleware.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Http/Middleware");
-        $middlewareName = $this->argument('middleware');
+        parent::handle();
 
-        $middlewarePath = "{$basePath}/{$middlewareName}.php";
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $middlewareName = $this->capitalize($this->argument('middleware'));
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $this->setPlaceHolders($middlewareName);
 
-        $modelStub = app_path("/Console/Stubs/middleware.stub");
-        $stubContent = $this->files->get($modelStub);
+        $middlewarePath = $this->getResourcePath($basePath, $middlewareName);
 
-        $stubContent = str_replace('{{ middlewareName }}', $middlewareName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->verifyIfResourceExists($middlewarePath, 'Middleware already exists.');
 
-        $this->files->put($middlewarePath, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($middlewarePath);
 
-        $this->info("{$middlewareName} created successfully for the module {$moduleName}");
+        $this->info("{$middlewareName} created successfully for the module {$this->moduleName}");
     }
 }

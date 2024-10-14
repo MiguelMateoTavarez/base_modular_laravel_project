@@ -2,46 +2,38 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateModelForModule extends Command
+class CreateModelForModule extends CommandFactory
 {
-    protected $signature = 'make:module-model {module} {model}';
-    protected $description = 'Create a model for a module';
-    protected Filesystem $files;
+    protected $signature = 'make:module-model {module} {model} {--p|path= : Custom path}';
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected $description = 'Create a model for a module';
+
+    protected string $directoryPath = 'Models';
+
+    protected string $stubPath = '/Console/Stubs/model.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Models");
-        $modelName = $this->argument('model');
+        parent::handle();
 
-        $modelPath = "{$basePath}/{$modelName}.php";
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $modelName = $this->capitalize($this->argument('model'));
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $this->setPlaceHolders($modelName);
 
-        $modelStub = app_path("/Console/Stubs/model.stub");
-        $stubContent = $this->files->get($modelStub);
+        $modelPath = $this->getResourcePath($basePath, $modelName);
 
-        $stubContent = str_replace('{{ modelName }}', $modelName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->verifyIfResourceExists($modelPath, 'Model already exists.');
 
-        $this->files->put($modelPath, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($modelPath);
 
-        $this->info("Model {$modelName} created successfully for the module {$moduleName}");
+        $this->info("Model {$modelName} created successfully for the module {$this->moduleName}");
     }
 }

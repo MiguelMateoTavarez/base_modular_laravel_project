@@ -2,51 +2,38 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateControllerForModule extends Command
+class CreateControllerForModule extends CommandFactory
 {
-    protected $signature = 'make:module-controller {module} {controller}';
-    protected $description = 'Create a controller for a module';
-    protected Filesystem $files;
+    protected $signature = 'make:module-controller {module} {controller} {--p|path= : Custom path}';
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected $description = 'Create a controller for a module';
+
+    protected string $directoryPath = 'Http/Controllers';
+
+    protected string $stubPath = '/Console/Stubs/api_controller.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Http/Controllers");
-        $controllerName = $this->argument('controller');
+        parent::handle();
 
-        $controllerPath = "{$basePath}/{$controllerName}.php";
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $controllerName = $this->capitalize($this->argument('controller'));
 
-        if($this->files->exists($controllerPath)){
-            $this->warn('The file already exists');
-            return;
-        }
+        $this->setPlaceHolders($controllerName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $controllerPath = $this->getResourcePath($basePath, $controllerName);
 
-        $modelStub = app_path("/Console/Stubs/api_controller.stub");
-        $stubContent = $this->files->get($modelStub);
+        $this->verifyIfResourceExists($controllerPath, 'Controller already exists.');
 
-        $stubContent = str_replace('{{ controllerName }}', $controllerName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($controllerPath);
 
-        $this->files->put($controllerPath, $stubContent);
-
-        $this->info("{$controllerName} created successfully for the module {$moduleName}");
+        $this->info("{$controllerName} created successfully for the module {$this->moduleName}");
     }
 }

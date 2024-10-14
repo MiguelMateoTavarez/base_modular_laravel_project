@@ -2,57 +2,38 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
+use App\Console\shared\CommandFactory;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
-class CreateRequestForModule extends Command
+class CreateRequestForModule extends CommandFactory
 {
-    protected $signature = 'make:module-request {module} {request}';
-    protected $description = 'Create a request for a module';
-    protected Filesystem $files;
+    protected $signature = 'make:module-request {module} {request} {--p|path= : Custom path}';
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected $description = 'Create a request for a module';
+
+    protected string $directoryPath = 'Http/Requests';
+
+    protected string $stubPath = '/Console/Stubs/request.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Http/Requests");
-        $requestName = $this->getTitleFormatted();
+        parent::handle();
 
-        $requestPath = "{$basePath}/{$requestName}.php";
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $requestName = $this->capitalize($this->argument('request'));
 
-        if($this->files->exists($requestPath)){
-            $this->warn('The file already exists');
-            return;
-        }
+        $this->setPlaceHolders($requestName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $requestPath = $this->getResourcePath($basePath, $requestName);
 
-        $modelStub = app_path("/Console/Stubs/request.stub");
-        $stubContent = $this->files->get($modelStub);
+        $this->verifyIfResourceExists($requestPath, 'Request already exists.');
 
-        $stubContent = str_replace('{{ requestName }}', $requestName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($requestPath);
 
-        $this->files->put($requestPath, $stubContent);
-
-        $this->info("{$requestName} created successfully for the module {$moduleName}");
-    }
-
-    private function getTitleFormatted()
-    {
-        $title = $this->argument('request');
-        return Str::contains($title, 'Request') ? $title : $title.'Request';
+        $this->info("{$requestName} created successfully for the module {$this->moduleName}");
     }
 }

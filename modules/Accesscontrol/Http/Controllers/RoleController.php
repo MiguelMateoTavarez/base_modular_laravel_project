@@ -10,13 +10,12 @@ use Modules\Accesscontrol\Eloquents\Contracts\RoleInterface;
 use Modules\Accesscontrol\Http\Requests\StoreRoleRequest;
 use Modules\Accesscontrol\Http\Requests\UpdateRoleRequest;
 use Modules\Accesscontrol\Http\Resources\RoleResource;
-use Modules\Accesscontrol\Models\Role;
 
 class RoleController extends Controller
 {
     public function __construct(
         private readonly RoleInterface $roleInterfaceService
-    ){
+    ) {
         parent::__construct();
     }
 

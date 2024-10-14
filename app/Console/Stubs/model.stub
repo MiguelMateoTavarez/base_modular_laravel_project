@@ -1,11 +1,14 @@
 <?php
 
-namespace Modules\{{ moduleName }}\Models;
+namespace {{ namespace }};
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class {{ modelName }} extends Model
+class {{ resourceName }} extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         //
     ];
