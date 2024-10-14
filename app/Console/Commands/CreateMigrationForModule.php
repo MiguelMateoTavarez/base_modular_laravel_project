@@ -4,18 +4,18 @@ namespace App\Console\Commands;
 
 use AllowDynamicProperties;
 use App\Console\shared\CommandFactory;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
 #[AllowDynamicProperties]
 class CreateMigrationForModule extends CommandFactory
 {
     protected $signature = 'make:module-migration {module} {migration}';
+
     protected $description = 'Create a migration for a module';
 
     protected string $directoryPath = 'Database/Migrations';
+
     protected string $stubPath = '/Console/Stubs/migration_create.stub';
 
     /**
@@ -43,9 +43,6 @@ class CreateMigrationForModule extends CommandFactory
 
     /**
      * Extract the name based on migration name
-     *
-     * @param string $migrationName
-     * @return string
      */
     protected function extractTableName(string $migrationName): string
     {
@@ -59,8 +56,8 @@ class CreateMigrationForModule extends CommandFactory
     protected function getStubPath(): string
     {
         return match (true) {
-            Str::contains($this->argument('migration'), 'create') => app_path("/Console/Stubs/migration_create.stub"),
-            default => app_path("/Console/Stubs/migration_modify.stub")
+            Str::contains($this->argument('migration'), 'create') => app_path('/Console/Stubs/migration_create.stub'),
+            default => app_path('/Console/Stubs/migration_modify.stub')
         };
     }
 
@@ -75,6 +72,7 @@ class CreateMigrationForModule extends CommandFactory
     protected function getResourcePath(string $basePath, string $resourceName): string
     {
         $timestamp = date('Y_m_d_His');
+
         return "{$basePath}/{$timestamp}_{$resourceName}.php";
     }
 }

@@ -8,9 +8,11 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 class CreateModelForModule extends CommandFactory
 {
     protected $signature = 'make:module-model {module} {model} {--p|path= : Custom path}';
+
     protected $description = 'Create a model for a module';
 
     protected string $directoryPath = 'Models';
+
     protected string $stubPath = '/Console/Stubs/model.stub';
 
     /**

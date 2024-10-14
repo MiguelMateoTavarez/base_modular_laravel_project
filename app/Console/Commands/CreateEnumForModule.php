@@ -3,17 +3,16 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreateEnumForModule extends CommandFactory
 {
     protected $signature = 'make:module-enum {module} {enum} {--p|path= : Custom path}';
+
     protected $description = 'Create an enum for a module';
 
     protected string $directoryPath = 'Enums';
+
     protected string $stubPath = '/Console/Stubs/enum.stub';
 
     /**

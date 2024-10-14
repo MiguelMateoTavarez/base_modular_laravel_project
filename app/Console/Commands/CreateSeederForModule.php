@@ -3,17 +3,16 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreateSeederForModule extends CommandFactory
 {
     protected $signature = 'make:module-seeder {module} {seeder} {--p|path= : Custom path}';
+
     protected $description = 'Create a seeder for a module';
 
     protected string $directoryPath = 'Database/Seeders';
+
     protected string $stubPath = '/Console/Stubs/seeder.stub';
 
     /**

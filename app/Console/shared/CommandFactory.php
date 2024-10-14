@@ -5,15 +5,17 @@ namespace App\Console\shared;
 use App\Adapter\FileSystem\FileSystemAdapter;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
 
 abstract class CommandFactory extends Command
 {
     use CustomPathTrait;
 
     protected string $directoryPath;
+
     protected string $stubPath;
+
     protected array $placeHolders;
+
     protected FileSystemAdapter $files;
 
     public function __construct(FileSystemAdapter $files)
@@ -34,6 +36,7 @@ abstract class CommandFactory extends Command
     protected function getBasePath(?string $customPath, string $moduleName): string
     {
         $path = $customPath ?? $this->directoryPath;
+
         return base_path("modules/{$moduleName}/{$path}");
     }
 
@@ -56,7 +59,7 @@ abstract class CommandFactory extends Command
 
     protected function createDirectoryForResource(string $basePath): void
     {
-        if (!$this->files->isDirectory($basePath)) {
+        if (! $this->files->isDirectory($basePath)) {
             $this->files->makeDirectory($basePath, 0755, true);
         }
     }
@@ -72,6 +75,7 @@ abstract class CommandFactory extends Command
     protected function getStubContent(): string
     {
         $stubContent = $this->files->getFileContent($this->getStubPath());
+
         return $this->replaceStubPlaceHolders($stubContent, $this->placeHolders);
     }
 
@@ -80,6 +84,7 @@ abstract class CommandFactory extends Command
         foreach ($placeHolders as $placeHolder => $value) {
             $content = str_replace($placeHolder, $value, $content);
         }
+
         return $content;
     }
 

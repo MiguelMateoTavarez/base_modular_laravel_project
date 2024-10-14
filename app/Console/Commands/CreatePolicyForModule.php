@@ -3,21 +3,20 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use App\Console\shared\CustomPathTrait;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreatePolicyForModule extends CommandFactory
 {
     protected $signature = 'make:module-policy {module} {policy}
         {--m|model= : The model that the policy applies to}
         {--p|path= : Custom path}';
+
     protected $description = 'Create a policy for a module';
 
     protected string $directoryPath = 'Policies';
+
     private string $modelsPath = 'Models';
+
     protected string $stubPath = '/Console/Stubs/policy.stub';
 
     /**
@@ -61,7 +60,7 @@ class CreatePolicyForModule extends CommandFactory
 
     private function verifyIfModelExists(string $modelPath, string $message): void
     {
-        if (!$this->files->exists($modelPath)) {
+        if (! $this->files->exists($modelPath)) {
             throw new \RuntimeException($message);
         }
     }
@@ -76,7 +75,7 @@ class CreatePolicyForModule extends CommandFactory
             '{{ namespace }}' => $this->getNameSpace(),
             '{{ modelNamespace }}' => $this->getResourceImportedNameSpace(),
             '{{ modelName }}' => $model,
-            '{{ moduleInjected }}' => lcfirst($model)
+            '{{ moduleInjected }}' => lcfirst($model),
         ];
     }
 

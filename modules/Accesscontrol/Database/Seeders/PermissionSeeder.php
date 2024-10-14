@@ -12,14 +12,14 @@ class PermissionSeeder extends Seeder
     public function run()
     {
         $models = [
-            class_basename(User::class)
+            class_basename(User::class),
         ];
 
-        foreach($models as $model) {
+        foreach ($models as $model) {
             foreach (ActionsEnum::cases() as $action) {
                 Permission::firstOrCreate([
                     'name' => "{$action->value}_{$model}",
-                    'description' => "Permission for {$action->value} in {$model}"
+                    'description' => "Permission for {$action->value} in {$model}",
                 ]);
             }
         }

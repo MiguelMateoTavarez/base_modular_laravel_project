@@ -2,19 +2,19 @@
 
 namespace Modules\Authentication\Eloquents\Services;
 
-use App\Services\API\Responses\ApiResponseService;
-use Modules\Authentication\Eloquents\Contracts\AuthServiceInterface;
 use App\Models\User;
+use App\Services\API\Responses\ApiResponseService;
 use Illuminate\Http\JsonResponse;
+use Modules\Authentication\Eloquents\Contracts\AuthServiceInterface;
 
 class AuthSanctumService implements AuthServiceInterface
 {
     public function login(array $credentials): JsonResponse
     {
-        if(!auth()->attempt([
+        if (! auth()->attempt([
             'email' => data_get($credentials, 'email'),
             'password' => data_get($credentials, 'password'),
-        ])){
+        ])) {
             return ApiResponseService::unauthorized();
         }
 

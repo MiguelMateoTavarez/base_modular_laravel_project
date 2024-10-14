@@ -3,18 +3,16 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use App\Console\shared\CustomPathTrait;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreateResourceForModule extends CommandFactory
 {
     protected $signature = 'make:module-resource {module} {resource} {--p|path= : Custom path}';
+
     protected $description = 'Create a resource for a module';
 
     protected string $directoryPath = 'Http/Resources';
+
     protected string $stubPath = '/Console/Stubs/resource.stub';
 
     /**

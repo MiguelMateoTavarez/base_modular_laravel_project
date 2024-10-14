@@ -34,7 +34,7 @@ trait CustomPathTrait
     protected function getCustomPath(): string
     {
         if (array_key_exists('path', $this->options())) {
-            return $this->directoryPath . '/' . $this->getClearCustomCapitalizedPath();
+            return $this->directoryPath.'/'.$this->getClearCustomCapitalizedPath();
         }
 
         return $this->directoryPath;

@@ -10,7 +10,9 @@ use Illuminate\Support\Str;
 class CreateModuleStructure extends Command
 {
     protected $signature = 'make:module {module}';
+
     protected $description = 'Create a new module with the necessary directory structure';
+
     protected Filesystem $files;
 
     public function __construct(Filesystem $files)
@@ -29,6 +31,7 @@ class CreateModuleStructure extends Command
 
         if ($this->files->isDirectory($basePath)) {
             $this->warn("The module $moduleName already exists");
+
             return;
         }
 
@@ -80,7 +83,7 @@ class CreateModuleStructure extends Command
             $this->createApiFile($moduleName, $path);
         }
         $gitKeepPath = "$path/.gitkeep";
-        $this->files->put($gitKeepPath, "");
+        $this->files->put($gitKeepPath, '');
     }
 
     /**
@@ -88,7 +91,7 @@ class CreateModuleStructure extends Command
      */
     private function createProviderClass(string $moduleName, string $providerPath): void
     {
-        $modelStub = app_path("/Console/Stubs/provider.stub");
+        $modelStub = app_path('/Console/Stubs/provider.stub');
         $stubContent = $this->files->get($modelStub);
         $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
         $this->files->put("$providerPath/{$moduleName}ServiceProvider.php", $stubContent);
@@ -99,7 +102,7 @@ class CreateModuleStructure extends Command
      */
     private function createApiFile(string $moduleName, string $apiPath): void
     {
-        $modelStub = app_path("/Console/Stubs/api.stub");
+        $modelStub = app_path('/Console/Stubs/api.stub');
         $stubContent = $this->files->get($modelStub);
         $stubContent = str_replace('{{ moduleName }}', strtolower($moduleName), $stubContent);
         $this->files->put("$apiPath/api.php", $stubContent);
@@ -116,11 +119,12 @@ class CreateModuleStructure extends Command
         $content = $this->files->get($providersPath);
         echo PHP_EOL;
 
-        if (!Str::contains($content, $providerClass)) {
-            $newProviderEntry = "    $providerClass" . PHP_EOL . '];';
+        if (! Str::contains($content, $providerClass)) {
+            $newProviderEntry = "    $providerClass".PHP_EOL.'];';
             $newContent = Str::replace('];', $newProviderEntry, $content);
             $this->files->put($providersPath, $newContent);
             $this->info("Service Provider {$providerClass} added to providers.php");
+
             return;
         }
         $this->info("Service Provider {$providerClass} it's already exists in providers.php");

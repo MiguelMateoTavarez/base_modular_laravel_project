@@ -13,7 +13,7 @@ class PermissionController extends Controller
     {
         return ApiResponseService::success([
             PermissionResource::collection(Permission::all()),
-            'Permissions retrieved successfully'
+            'Permissions retrieved successfully',
         ]);
     }
 }

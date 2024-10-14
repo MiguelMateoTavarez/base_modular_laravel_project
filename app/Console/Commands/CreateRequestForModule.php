@@ -3,19 +3,18 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use App\Console\shared\CustomPathTrait;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreateRequestForModule extends CommandFactory
 {
     protected $signature = 'make:module-request {module} {request} {--p|path= : Custom path}';
+
     protected $description = 'Create a request for a module';
 
     protected string $directoryPath = 'Http/Requests';
+
     protected string $stubPath = '/Console/Stubs/request.stub';
+
     /**
      * @throws FileNotFoundException
      */

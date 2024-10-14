@@ -4,7 +4,6 @@ namespace Modules\Authentication\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Modules\Authentication\Eloquents\Contracts\AuthServiceInterface;
 
 class LogoutController extends Controller

@@ -3,17 +3,16 @@
 namespace App\Console\Commands;
 
 use App\Console\shared\CommandFactory;
-use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
 
 class CreateMiddlewareForModule extends CommandFactory
 {
     protected $signature = 'make:module-middleware {module} {middleware} {--p|path= : Custom path}';
+
     protected $description = 'Create a middleware for a module';
 
     protected string $directoryPath = 'Http/Middleware';
+
     protected string $stubPath = '/Console/Stubs/middleware.stub';
 
     /**

@@ -8,9 +8,11 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 class CreateControllerForModule extends CommandFactory
 {
     protected $signature = 'make:module-controller {module} {controller} {--p|path= : Custom path}';
+
     protected $description = 'Create a controller for a module';
 
     protected string $directoryPath = 'Http/Controllers';
+
     protected string $stubPath = '/Console/Stubs/api_controller.stub';
 
     /**

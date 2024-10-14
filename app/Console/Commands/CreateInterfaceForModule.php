@@ -8,9 +8,11 @@ use Illuminate\Contracts\Filesystem\FileNotFoundException;
 class CreateInterfaceForModule extends CommandFactory
 {
     protected $signature = 'make:module-interface {module} {interface} {--p|path= : Custom path}';
+
     protected $description = 'Create an interface for a module';
 
     protected string $directoryPath = 'Eloquents/Contracts';
+
     protected string $stubPath = '/Console/Stubs/contract.stub';
 
     /**

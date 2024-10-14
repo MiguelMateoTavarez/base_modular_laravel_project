@@ -13,9 +13,9 @@ class AuthenticationServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__ . '/../Routes/api.php');
-        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations/*');
-        $this->loadTranslationsFrom(__DIR__ . '/../Lang/es.json', 'Authentication');
+        $this->loadRoutesFrom(__DIR__.'/../Routes/api.php');
+        $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations/*');
+        $this->loadTranslationsFrom(__DIR__.'/../Lang/es.json', 'Authentication');
     }
 
     /**
