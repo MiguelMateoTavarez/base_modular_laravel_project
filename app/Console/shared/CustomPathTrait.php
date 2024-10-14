@@ -13,11 +13,11 @@ trait CustomPathTrait
     {
         $pathExploded = explode('/', implode($this->clearBackSlash()));
 
-        $pathCapitalized = array_map(function($str){
+        $pathCapitalized = array_map(function ($str) {
             return ucfirst($str);
         }, $pathExploded);
 
-        return implode('/',$pathCapitalized);
+        return implode('/', $pathCapitalized);
     }
 
     protected function clearBackSlash(): array
@@ -33,11 +33,11 @@ trait CustomPathTrait
 
     protected function getCustomPath(): string
     {
-        if (is_null($this->option('path'))) {
-            return $this->directoryPath;
+        if (in_array('path', $this->options())) {
+            return $this->directoryPath . '/' . $this->getClearCustomCapitalizedPath();
         }
 
-        return $this->directoryPath.'/'.$this->getClearCustomCapitalizedPath();
+        return $this->directoryPath;
     }
 
     protected function getNameSpace(): string

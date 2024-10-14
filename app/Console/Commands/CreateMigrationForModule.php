@@ -2,12 +2,14 @@
 
 namespace App\Console\Commands;
 
+use AllowDynamicProperties;
 use App\Console\shared\CommandFactory;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
+#[AllowDynamicProperties]
 class CreateMigrationForModule extends CommandFactory
 {
     protected $signature = 'make:module-migration {module} {migration}';
@@ -21,29 +23,20 @@ class CreateMigrationForModule extends CommandFactory
      */
     public function handle(): void
     {
+
         $moduleName = $this->capitalize($this->argument('module'));
         $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
         $migrationName = $this->argument('migration');
         $tableName = $this->extractTableName($migrationName);
         $snakeCaseMigration = Str::snake($migrationName);
-        $timestamp = date('Y_m_d_His');
 
-        $migrationsPath = "{$basePath}/{$timestamp}_{$snakeCaseMigration}.php";
+        $this->setPlaceHolders($tableName, $moduleName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $migrationsPath = $this->getResourcePath($basePath, $snakeCaseMigration);
 
-        $modelStub = match(true){
-            Str::contains($migrationName, 'create') => app_path("/Console/Stubs/migration_create.stub"),
-            default =>app_path("/Console/Stubs/migration_modify.stub")
-        };
-        $stubContent = $this->files->get($modelStub);
+        $this->createDirectoryForResource($basePath);
 
-        $stubContent = str_replace('{{ table }}', $tableName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-
-        $this->files->put($migrationsPath, $stubContent);
+        $this->createResource($migrationsPath);
 
         $this->info("Migration {$migrationName} created successfully for the module {$moduleName}");
     }
@@ -56,9 +49,32 @@ class CreateMigrationForModule extends CommandFactory
      */
     protected function extractTableName(string $migrationName): string
     {
-        return Str::plural(match(true){
+        return Str::plural(match (true) {
             Str::startsWith($migrationName, 'create') => Str::snake(Str::between($migrationName, 'create_', '_table')),
             Str::startsWith($migrationName, 'add') => Str::snake(Str::between($migrationName, '_to_', '_table')),
+            Str::startsWith($migrationName, 'modify') => Str::snake(Str::between($migrationName, 'modify_', '_table')),
         });
+    }
+
+    protected function getStubPath(): string
+    {
+        return match (true) {
+            Str::contains($this->argument('migration'), 'create') => app_path("/Console/Stubs/migration_create.stub"),
+            default => app_path("/Console/Stubs/migration_modify.stub")
+        };
+    }
+
+    protected function setPlaceHolders($resourceName, $moduleName): void
+    {
+        $this->placeHolders = [
+            '{{ table }}' => $resourceName,
+            '{{ moduleName }}' => $moduleName,
+        ];
+    }
+
+    protected function getResourcePath(string $basePath, string $resourceName): string
+    {
+        $timestamp = date('Y_m_d_His');
+        return "{$basePath}/{$timestamp}_{$resourceName}.php";
     }
 }

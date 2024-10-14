@@ -73,7 +73,6 @@ class CreateServiceForModule extends CommandFactory
             '{{ interfaceName }}' => $this->capitalize($this->option('interface'))
         ];
     }
-
     protected function getResourceImportedNameSpace(): string
     {
         $pathFormattedForNamespace = str_replace('/', '\\', $this->getInterfacePath());
