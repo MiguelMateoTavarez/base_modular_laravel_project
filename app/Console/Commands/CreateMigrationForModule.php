@@ -2,34 +2,31 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CommandFactory;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class CreateMigrationForModule extends Command
+class CreateMigrationForModule extends CommandFactory
 {
     protected $signature = 'make:module-migration {module} {migration}';
     protected $description = 'Create a migration for a module';
-    protected Filesystem $files;
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected string $directoryPath = 'Database/Migrations';
+    protected string $stubPath = '/Console/Stubs/migration_create.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Database/Migrations");
-        $timestamp = date('Y_m_d_His');
+        $moduleName = $this->capitalize($this->argument('module'));
+        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
         $migrationName = $this->argument('migration');
         $tableName = $this->extractTableName($migrationName);
         $snakeCaseMigration = Str::snake($migrationName);
+        $timestamp = date('Y_m_d_His');
 
         $migrationsPath = "{$basePath}/{$timestamp}_{$snakeCaseMigration}.php";
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Http\Resources\Second\Third;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class {{ resourceName }} extends JsonResource
+class ThirdResource extends JsonResource
 {
     public function toArray($request): array
     {

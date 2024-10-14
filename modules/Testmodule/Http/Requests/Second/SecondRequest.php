@@ -1,10 +1,10 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Http\Requests\Second;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ resourceName }} extends FormRequest
+class SecondRequest extends FormRequest
 {
     public function authorize(): bool
     {

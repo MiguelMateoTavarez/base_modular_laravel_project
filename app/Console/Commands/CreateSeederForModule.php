@@ -2,57 +2,38 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CommandFactory;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class CreateSeederForModule extends Command
+class CreateSeederForModule extends CommandFactory
 {
     protected $signature = 'make:module-seeder {module} {seeder} {--p|path= : Custom path}';
     protected $description = 'Create a seeder for a module';
-    protected Filesystem $files;
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
+    protected string $directoryPath = 'Database/Seeders';
+    protected string $stubPath = '/Console/Stubs/seeder.stub';
 
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $basePath = base_path("modules/{$moduleName}/Database/Seeders");
-        $seederName = $this->getTitleFormatted();
+        $moduleName = $this->capitalize($this->argument('module'));
+        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        $seederName = $this->capitalize($this->argument('seeder'));
 
-        $seederPath = "{$basePath}/{$seederName}.php";
+        $this->setPlaceHolders($seederName, $moduleName);
 
-        if($this->files->exists($seederPath)){
-            $this->warn('The file already exists');
-            return;
-        }
+        $seederPath = $this->getResourcePath($basePath, $seederName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $this->verifyIfResourceExists($seederPath, 'Seeder already exists.');
 
-        $modelStub = app_path("/Console/Stubs/seeder.stub");
-        $stubContent = $this->files->get($modelStub);
-
-        $stubContent = str_replace('{{ seederName }}', $seederName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-
-        $this->files->put($seederPath, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($seederPath);
 
         $this->info("{$seederName} created successfully for the module {$moduleName}");
-    }
-
-    private function getTitleFormatted()
-    {
-        $title = $this->argument('seeder');
-        return Str::contains($title, 'Seeder') ? $title : $title.'Seeder';
     }
 }

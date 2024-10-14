@@ -1,17 +1,17 @@
 <?php
 
-namespace {{ namespace }};
+namespace Modules\Testmodule\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class {{ resourceName }} extends FormRequest
+class FirstRequest extends FormRequest
 {
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
         return [
             //

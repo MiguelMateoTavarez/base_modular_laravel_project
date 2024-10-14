@@ -2,64 +2,38 @@
 
 namespace App\Console\Commands;
 
+use App\Console\shared\CommandFactory;
 use App\Console\shared\CustomPathTrait;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-class CreateRequestForModule extends Command
+class CreateRequestForModule extends CommandFactory
 {
-    use CustomPathTrait;
-
     protected $signature = 'make:module-request {module} {request} {--p|path= : Custom path}';
     protected $description = 'Create a request for a module';
-    protected Filesystem $files;
 
-    public function __construct(Filesystem $files)
-    {
-        parent::__construct();
-        $this->files = $files;
-    }
-
+    protected string $directoryPath = 'Http/Requests';
+    protected string $stubPath = '/Console/Stubs/request.stub';
     /**
      * @throws FileNotFoundException
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
-        $customPath = $this->getCustomPath();
-        $basePath = is_null($customPath)
-            ? base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Http/Requests')
-            : base_path('modules' . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . 'Http/Requests/' . $customPath);
-        $requestName = $this->getTitleFormatted();
+        $moduleName = $this->capitalize($this->argument('module'));
+        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        $requestName = $this->capitalize($this->argument('request'));
 
-        $requestPath = "{$basePath}/{$requestName}.php";
+        $this->setPlaceHolders($requestName, $moduleName);
 
-        if($this->files->exists($requestPath)){
-            $this->warn('The file already exists');
-            return;
-        }
+        $requestPath = $this->getResourcePath($basePath, $requestName);
 
-        if(!$this->files->isDirectory($basePath)){
-            $this->files->makeDirectory($basePath,0755, true);
-        }
+        $this->verifyIfResourceExists($requestPath, 'Request already exists.');
 
-        $modelStub = app_path("/Console/Stubs/request.stub");
-        $stubContent = $this->files->get($modelStub);
-
-        $stubContent = str_replace('{{ requestName }}', $requestName, $stubContent);
-        $stubContent = str_replace('{{ moduleName }}', $moduleName, $stubContent);
-        $stubContent = str_replace('{{ namespace }}', $this->getNameSpace(), $stubContent);
-
-        $this->files->put($requestPath, $stubContent);
+        $this->createDirectoryForResource($basePath);
+        $this->createResource($requestPath);
 
         $this->info("{$requestName} created successfully for the module {$moduleName}");
-    }
-
-    private function getTitleFormatted()
-    {
-        $title = $this->argument('request');
-        return Str::contains($title, 'Request') ? $title : $title.'Request';
     }
 }
