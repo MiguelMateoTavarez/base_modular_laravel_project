@@ -30,8 +30,8 @@
 | php artisan make:module-controller ModuleName ResourceController -p CustomPath        | Create a controller for a module                                      |
 | php artisan make:module-enum ModuleName ResourceEnum -p CustomPath                    | Create an enum for a module                                           |
 | php artisan make:module-interface ModuleName ResourceInterface -p CustomPath          | Create an interface for a module                                      |
-| php artisan make:module-middleware ModuleName ResourceMiddleware -p CustomPath        | Create an middleware for a module                                     |
-| php artisan make:module-migration ModuleName ResourceMigration -p CustomPath          | Create a migration for a module                                       |
+| php artisan make:module-middleware ModuleName ResourceMiddleware -p CustomPath        | Create a middleware for a module                                     |
+| php artisan make:module-migration ModuleName ResourceMigration                        | Create a migration for a module                                       |
 | php artisan make:module-model ModuleName ResourceModel -p CustomPath                  | Create a model for a module                                           |
 | php artisan make:module-policy ModuleName ResourcePolicy -m Model -p CustomPath       | Create a policy for a module                                          |
 | php artisan make:module-request ModuleName ResourceRequest -p CustomPath              | Create a request for a module                                         |
