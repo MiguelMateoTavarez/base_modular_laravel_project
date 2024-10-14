@@ -11,10 +11,9 @@ abstract class CommandFactory extends Command
     use CustomPathTrait;
 
     protected string $directoryPath;
-
     protected string $stubPath;
-
-    protected array $placeHolders;
+    protected array  $placeHolders;
+    protected string $moduleName;
 
     protected FileSystemAdapter $files;
 
@@ -24,20 +23,25 @@ abstract class CommandFactory extends Command
         $this->files = $files;
     }
 
-    protected function setPlaceHolders($resourceName, $moduleName): void
+    public function handle(): void
+    {
+        $this->moduleName = $this->argument('module');
+    }
+
+    protected function setPlaceHolders($resourceName): void
     {
         $this->placeHolders = [
             '{{ resourceName }}' => $resourceName,
-            '{{ moduleName }}' => $moduleName,
+            '{{ moduleName }}' => $this->moduleName,
             '{{ namespace }}' => $this->getNameSpace(),
         ];
     }
 
-    protected function getBasePath(?string $customPath, string $moduleName): string
+    protected function getBasePath(?string $customPath): string
     {
         $path = $customPath ?? $this->directoryPath;
 
-        return base_path("modules/{$moduleName}/{$path}");
+        return base_path("modules/{$this->moduleName}/{$path}");
     }
 
     protected function capitalize(string $argument): string

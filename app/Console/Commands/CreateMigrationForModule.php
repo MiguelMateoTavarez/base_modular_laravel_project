@@ -23,14 +23,14 @@ class CreateMigrationForModule extends CommandFactory
      */
     public function handle(): void
     {
+        parent:: handle();
 
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        $basePath = $this->getBasePath($this->getCustomPath());
         $migrationName = $this->argument('migration');
         $tableName = $this->extractTableName($migrationName);
         $snakeCaseMigration = Str::snake($migrationName);
 
-        $this->setPlaceHolders($tableName, $moduleName);
+        $this->setPlaceHolders($tableName);
 
         $migrationsPath = $this->getResourcePath($basePath, $snakeCaseMigration);
 
@@ -38,7 +38,7 @@ class CreateMigrationForModule extends CommandFactory
 
         $this->createResource($migrationsPath);
 
-        $this->info("Migration {$migrationName} created successfully for the module {$moduleName}");
+        $this->info("Migration {$migrationName} created successfully for the module {$this->moduleName}");
     }
 
     /**
@@ -61,11 +61,11 @@ class CreateMigrationForModule extends CommandFactory
         };
     }
 
-    protected function setPlaceHolders($resourceName, $moduleName): void
+    protected function setPlaceHolders($resourceName): void
     {
         $this->placeHolders = [
             '{{ table }}' => $resourceName,
-            '{{ moduleName }}' => $moduleName,
+            '{{ moduleName }}' => $this->moduleName,
         ];
     }
 

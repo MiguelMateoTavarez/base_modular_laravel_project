@@ -20,11 +20,12 @@ class CreateEnumForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $enumName = $this->capitalize($this->argument('enum'));
 
-        $this->setPlaceHolders($enumName, $moduleName);
+        $this->setPlaceHolders($enumName);
 
         $enumPath = $this->getResourcePath($basePath, $enumName);
 
@@ -33,6 +34,6 @@ class CreateEnumForModule extends CommandFactory
         $this->createDirectoryForResource($basePath);
         $this->createResource($enumPath);
 
-        $this->info("{$enumName} created successfully for the module {$moduleName}");
+        $this->info("{$enumName} created successfully for the module {$this->moduleName}");
     }
 }

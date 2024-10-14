@@ -20,11 +20,12 @@ class CreateRequestForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $requestName = $this->capitalize($this->argument('request'));
 
-        $this->setPlaceHolders($requestName, $moduleName);
+        $this->setPlaceHolders($requestName);
 
         $requestPath = $this->getResourcePath($basePath, $requestName);
 
@@ -33,6 +34,6 @@ class CreateRequestForModule extends CommandFactory
         $this->createDirectoryForResource($basePath);
         $this->createResource($requestPath);
 
-        $this->info("{$requestName} created successfully for the module {$moduleName}");
+        $this->info("{$requestName} created successfully for the module {$this->moduleName}");
     }
 }

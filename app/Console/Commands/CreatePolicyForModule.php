@@ -24,9 +24,10 @@ class CreatePolicyForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
-        $modelBasePath = $this->getBasePath($this->getModelPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $modelBasePath = $this->getBasePath($this->getModelPath());
         $policyName = $this->capitalize($this->argument('policy'));
         $modelName = $this->capitalize($this->option('model'));
         $modelPath = $this->getResourcePath($modelBasePath, $modelName);
@@ -36,7 +37,7 @@ class CreatePolicyForModule extends CommandFactory
             "The model '{$modelBasePath}' doesn't exists."
         );
 
-        $this->setPlaceHolders($policyName, $moduleName);
+        $this->setPlaceHolders($policyName);
 
         $policyPath = $this->getResourcePath($basePath, $policyName);
 
@@ -46,7 +47,7 @@ class CreatePolicyForModule extends CommandFactory
 
         $this->createResource($policyPath);
 
-        $this->info("Policy {$policyName} created successfully for the module {$moduleName}");
+        $this->info("Policy {$policyName} created successfully for the module {$this->moduleName}");
     }
 
     private function getModelPath(): string
@@ -65,13 +66,13 @@ class CreatePolicyForModule extends CommandFactory
         }
     }
 
-    protected function setPlaceHolders($resourceName, $moduleName): void
+    protected function setPlaceHolders($resourceName): void
     {
         $model = $this->option('model');
 
         $this->placeHolders = [
             '{{ resourceName }}' => $resourceName,
-            '{{ moduleName }}' => $moduleName,
+            '{{ moduleName }}' => $this->moduleName,
             '{{ namespace }}' => $this->getNameSpace(),
             '{{ modelNamespace }}' => $this->getResourceImportedNameSpace(),
             '{{ modelName }}' => $model,

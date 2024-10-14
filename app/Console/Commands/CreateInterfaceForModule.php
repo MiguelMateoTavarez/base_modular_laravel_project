@@ -20,19 +20,20 @@ class CreateInterfaceForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $interfaceName = $this->capitalize($this->argument('interface'));
 
-        $this->setPlaceHolders($interfaceName, $moduleName);
+        $this->setPlaceHolders($interfaceName);
 
         $interfacePath = $this->getResourcePath($basePath, $interfaceName);
 
         $this->verifyIfResourceExists($interfacePath, 'Interface already exists.');
 
         $this->createDirectoryForResource($basePath);
-        $this->createResource($interfacePath, $interfaceName, $moduleName);
+        $this->createResource($interfacePath);
 
-        $this->info("Interface {$interfaceName} created successfully for the module {$moduleName}");
+        $this->info("Interface {$interfaceName} created successfully for the module {$this->moduleName}");
     }
 }

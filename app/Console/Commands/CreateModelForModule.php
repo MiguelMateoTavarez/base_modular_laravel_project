@@ -20,19 +20,20 @@ class CreateModelForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $modelName = $this->capitalize($this->argument('model'));
 
-        $this->setPlaceHolders($modelName, $moduleName);
+        $this->setPlaceHolders($modelName);
 
         $modelPath = $this->getResourcePath($basePath, $modelName);
 
         $this->verifyIfResourceExists($modelPath, 'Model already exists.');
 
         $this->createDirectoryForResource($basePath);
-        $this->createResource($modelPath, $modelName, $moduleName);
+        $this->createResource($modelPath);
 
-        $this->info("Model {$modelName} created successfully for the module {$moduleName}");
+        $this->info("Model {$modelName} created successfully for the module {$this->moduleName}");
     }
 }

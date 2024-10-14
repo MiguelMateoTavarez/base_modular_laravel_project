@@ -26,7 +26,7 @@ class CreateModuleStructure extends Command
      */
     public function handle(): void
     {
-        $moduleName = Str::title($this->argument('module'));
+        $moduleName = $this->argument('module');
         $basePath = base_path("modules/$moduleName");
 
         if ($this->files->isDirectory($basePath)) {

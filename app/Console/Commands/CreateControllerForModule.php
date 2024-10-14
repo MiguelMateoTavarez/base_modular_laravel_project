@@ -20,11 +20,12 @@ class CreateControllerForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent::handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $controllerName = $this->capitalize($this->argument('controller'));
 
-        $this->setPlaceHolders($controllerName, $moduleName);
+        $this->setPlaceHolders($controllerName);
 
         $controllerPath = $this->getResourcePath($basePath, $controllerName);
 
@@ -33,6 +34,6 @@ class CreateControllerForModule extends CommandFactory
         $this->createDirectoryForResource($basePath);
         $this->createResource($controllerPath);
 
-        $this->info("{$controllerName} created successfully for the module {$moduleName}");
+        $this->info("{$controllerName} created successfully for the module {$this->moduleName}");
     }
 }

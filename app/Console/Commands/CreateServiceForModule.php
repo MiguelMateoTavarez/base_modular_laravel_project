@@ -24,9 +24,10 @@ class CreateServiceForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
-        $interfaceBasePath = $this->getBasePath($this->getInterfacePath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
+        $interfaceBasePath = $this->getBasePath($this->getInterfacePath());
         $serviceName = $this->capitalize($this->argument('service'));
         $interfaceName = $this->capitalize($this->option('interface'));
         $interfacePath = $this->getResourcePath($interfaceBasePath, $interfaceName);
@@ -36,7 +37,7 @@ class CreateServiceForModule extends CommandFactory
             "The interface '{$interfaceBasePath}' doesn't exists."
         );
 
-        $this->setPlaceHolders($serviceName, $moduleName);
+        $this->setPlaceHolders($serviceName);
 
         $servicePath = $this->getResourcePath($basePath, $serviceName);
 
@@ -46,7 +47,7 @@ class CreateServiceForModule extends CommandFactory
 
         $this->createResource($servicePath);
 
-        $this->info("Service {$serviceName} created successfully for the module {$moduleName}");
+        $this->info("Service {$serviceName} created successfully for the module {$this->moduleName}");
     }
 
     private function verifyIfInterfaceExists(string $interfacePath, string $message): void
@@ -65,11 +66,11 @@ class CreateServiceForModule extends CommandFactory
         return $this->interfacePath.'/'.$this->getClearCustomCapitalizedPath();
     }
 
-    protected function setPlaceHolders($resourceName, $moduleName): void
+    protected function setPlaceHolders($resourceName): void
     {
         $this->placeHolders = [
             '{{ resourceName }}' => $resourceName,
-            '{{ moduleName }}' => $moduleName,
+            '{{ moduleName }}' => $this->moduleName,
             '{{ namespace }}' => $this->getNameSpace(),
             '{{ interfaceNamespace }}' => $this->getResourceImportedNameSpace(),
             '{{ interfaceName }}' => $this->capitalize($this->option('interface')),

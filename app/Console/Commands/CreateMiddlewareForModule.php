@@ -20,11 +20,12 @@ class CreateMiddlewareForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $middlewareName = $this->capitalize($this->argument('middleware'));
 
-        $this->setPlaceHolders($middlewareName, $moduleName);
+        $this->setPlaceHolders($middlewareName);
 
         $middlewarePath = $this->getResourcePath($basePath, $middlewareName);
 
@@ -33,6 +34,6 @@ class CreateMiddlewareForModule extends CommandFactory
         $this->createDirectoryForResource($basePath);
         $this->createResource($middlewarePath);
 
-        $this->info("{$middlewareName} created successfully for the module {$moduleName}");
+        $this->info("{$middlewareName} created successfully for the module {$this->moduleName}");
     }
 }

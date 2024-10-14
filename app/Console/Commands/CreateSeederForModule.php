@@ -20,11 +20,12 @@ class CreateSeederForModule extends CommandFactory
      */
     public function handle(): void
     {
-        $moduleName = $this->capitalize($this->argument('module'));
-        $basePath = $this->getBasePath($this->getCustomPath(), $moduleName);
+        parent:: handle();
+
+        $basePath = $this->getBasePath($this->getCustomPath());
         $seederName = $this->capitalize($this->argument('seeder'));
 
-        $this->setPlaceHolders($seederName, $moduleName);
+        $this->setPlaceHolders($seederName);
 
         $seederPath = $this->getResourcePath($basePath, $seederName);
 
@@ -33,6 +34,6 @@ class CreateSeederForModule extends CommandFactory
         $this->createDirectoryForResource($basePath);
         $this->createResource($seederPath);
 
-        $this->info("{$seederName} created successfully for the module {$moduleName}");
+        $this->info("{$seederName} created successfully for the module {$this->moduleName}");
     }
 }
