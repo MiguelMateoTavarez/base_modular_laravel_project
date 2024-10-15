@@ -1,26 +1,33 @@
 # Laravel modular project
 
+## Start the project
+
+* Copy the **.env.example** file and rename it **.env**
+* Execute the next command: **composer install**
+* Start your docker
+* Execute the next command: **./vendor/bin/sail up -d**
+
 ## Estructure
 
 * Modules
-  * Security
-    * Database
-      * Migrations
-      * Seeders
-    * Eloquents
-      * Contracts
-      * Services
-    * Enums
-    * Http
-      * Controllers
-      * Middlewares
-      * Requests
-      * Resources
-    * Models
-    * Observers
-    * Policies
-    * Providers
-    * Routes
+    * Security
+        * Database
+            * Migrations
+            * Seeders
+        * Eloquents
+            * Contracts
+            * Services
+        * Enums
+        * Http
+            * Controllers
+            * Middlewares
+            * Requests
+            * Resources
+        * Models
+        * Observers
+        * Policies
+        * Providers
+        * Routes
 
 ## Commands
 
