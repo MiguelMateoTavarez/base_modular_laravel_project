@@ -1,0 +1,42 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\AuditLog;
+use {{ modelNamespace }};
+
+class {{ modelName }}Observer
+{
+    public function created({{ modelName }} ${{ moduleInjected }}): void
+    {
+        AuditLog::create([
+            'event' => 'created',
+            'model' => {{ modelName }}::class,
+            'record_id' => ${{ moduleInjected }}->id,
+            'data' => ${{ moduleInjected }}->toJson(),
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    public function updated({{ modelName }} ${{ moduleInjected }}): void
+    {
+        AuditLog::create([
+            'event' => 'updated',
+            'model' => {{ modelName }}::class,
+            'record_id' => ${{ moduleInjected }}->id,
+            'data' => ${{ moduleInjected }}->toJson(),
+            'user_id' => auth()->id(),
+        ]);
+    }
+
+    public function deleted({{ modelName }} ${{ moduleInjected }}): void
+    {
+        AuditLog::create([
+            'event' => 'deleted',
+            'model' => {{ modelName }}::class,
+            'record_id' => ${{ moduleInjected }}->id,
+            'data' => ${{ moduleInjected }}->toJson(),
+            'user_id' => auth()->id(),
+        ]);
+    }
+}
